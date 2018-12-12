@@ -6,6 +6,7 @@ namespace _Scripts
     {
         public Material TrailMaterial;
         public Material ParticleMaterial;
+        public Light ParticleLight;
         private ParticleSystem.EmissionModule[] _emissionModules;
         private ParticleSystem.ShapeModule[] _shapeModules;
         private ParticleSystem.MainModule[] _mainModules;
@@ -27,12 +28,13 @@ namespace _Scripts
                 GameObject go = new GameObject();
                 ParticleSystem particleGenerator = go.AddComponent<ParticleSystem>();
                 ParticleSystemRenderer particleRenderer =  (ParticleSystemRenderer)particleGenerator.GetComponent<Renderer>();
-                _mainModules[i] = particleGenerator.main;
-                _emissionModules[i] = particleGenerator.emission;
-                _shapeModules[i] = particleGenerator.shape;
+                ExtractModules(i, particleGenerator);
 
-
-                _noiseModules[i] = particleGenerator.noise;
+                ParticleSystem.LightsModule lm = particleGenerator.lights;
+                lm.enabled = true;
+                lm.light = ParticleLight;
+                lm.ratio = 1;
+                lm.useParticleColor = true;
 
                 ParticleSystem.TrailModule trm = particleGenerator.trails;
                 trm.enabled = true;
@@ -47,10 +49,10 @@ namespace _Scripts
                 go.transform.position = transform.TransformPoint(pos);
                 go.transform.parent = transform;
             }
-            ConfigureMainModules();
-            ConfigureEmissionModules();
-            ConfigureNoiseModules();
-            ConfigureShapeModules();
+            InitializeMainModules();
+            InitializeEmissionModules();
+            InitializeNoiseModules();
+            InitializeShapeModules();
         }
 
         // Update is called once per frame
@@ -66,16 +68,16 @@ namespace _Scripts
             }
         }
 
-        void ConfigureMainModules()
+        void InitializeMainModules()
         {
             for (int i = 0; i < _numberOfParticleGenerators; i++)
             {
                 _mainModules[i].gravityModifier = 0.5f;
-                _mainModules[i].startSize = 0.1f;
+                _mainModules[i].startSize = 0.1f;            
             }
         }
 
-        void ConfigureEmissionModules()
+        void InitializeEmissionModules()
         {
             for (int i = 0; i < _numberOfParticleGenerators; i++)
             {
@@ -84,7 +86,7 @@ namespace _Scripts
             }
         }
 
-        void ConfigureShapeModules()
+        void InitializeShapeModules()
         {
             for (int i = 0; i < _numberOfParticleGenerators; i++)
             {
@@ -93,12 +95,20 @@ namespace _Scripts
             }
         }
         
-        void ConfigureNoiseModules()
+        void InitializeNoiseModules()
         {
             for (int i = 0; i < _numberOfParticleGenerators; i++)
             {
                 _noiseModules[i].enabled = true;
             }
+        }
+
+        void ExtractModules(int i, ParticleSystem particleGenerator)
+        {
+            _mainModules[i] = particleGenerator.main;
+            _emissionModules[i] = particleGenerator.emission;
+            _shapeModules[i] = particleGenerator.shape;
+            _noiseModules[i] = particleGenerator.noise;
         }
     }
 }

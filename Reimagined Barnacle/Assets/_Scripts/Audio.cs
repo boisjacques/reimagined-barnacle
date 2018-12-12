@@ -8,6 +8,7 @@ namespace _Scripts
         public static float[] Samples = new float[512];
         public static float[] FrequencyBand = new float[8];
         public static float[] BandBuffer = new float[8];
+        public static float AverageFrequency;
         private float[] _bufferDecrease = new float[8];
 
         public float[] FrequencyBandDebug;
@@ -75,6 +76,11 @@ namespace _Scripts
 
                 FrequencyBand[i] = average * 10;
             }
+        }
+
+        void CalculateAverageFrequency()
+        {
+            
         }
     }
 }
