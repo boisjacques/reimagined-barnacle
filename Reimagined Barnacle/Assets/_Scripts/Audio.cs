@@ -5,12 +5,16 @@ namespace _Scripts
     public class Audio : MonoBehaviour
     {
         private AudioSource _audioSource;
-        public static float[] Samples = new float[1024];
-        public static float[] FrequencyBand = new float[8];
-        public static float[] BandBuffer = new float[8];
+        private float[] _samples = new float[512];
+        private float[] _frequencyBand = new float[8];
+        private float[] _bandBuffer = new float[8];
         public static float AverageFrequency;
         private float[] _bufferDecrease = new float[8];
-
+        
+        private float[] _freqBandHighest = new float[8];
+        public static float[] AudioBand = new float[8];
+        public static float[] AudioBandBuffer = new float[8];
+        
         public float[] FrequencyBandDebug;
         public float[] SamplesDebug;
         public int sampleRate;
@@ -27,8 +31,9 @@ namespace _Scripts
             GetSpectrumData();
             MakeFrequencyBand();
             BandBufferMethod();
-            FrequencyBandDebug = FrequencyBand;
-            SamplesDebug = Samples;
+            CreateAudioBands();
+            FrequencyBandDebug = _frequencyBand;
+            SamplesDebug = _samples;
             sampleRate = AudioSettings.outputSampleRate;
         }
 
@@ -41,15 +46,15 @@ namespace _Scripts
         {
             for (int i = 0; i < 8; i++)
             {
-                if (FrequencyBand[i] > BandBuffer[i])
+                if (_frequencyBand[i] > _bandBuffer[i])
                 {
-                    BandBuffer[i] = FrequencyBand[i];
+                    _bandBuffer[i] = _frequencyBand[i];
                     _bufferDecrease[i] = 0.005f;
                 }
 
-                if (FrequencyBand[i] < BandBuffer[i])
+                if (_frequencyBand[i] < _bandBuffer[i])
                 {
-                    BandBuffer[i] -= _bufferDecrease[i];
+                    _bandBuffer[i] -= _bufferDecrease[i];
                     _bufferDecrease[i] *= 1.2f;
                 }
             }
@@ -70,19 +75,32 @@ namespace _Scripts
 
                 for (int j = 0; j < sampleCount; j++)
                 {
-                    average += Samples[count] * (count + 1);
+                    average += _samples[count] * (count + 1);
                     count++;
                 }
 
                 average /= count;
 
-                FrequencyBand[i] = average * 10;
+                _frequencyBand[i] = average * 10;
             }
         }
 
         void CalculateAverageFrequency()
         {
-            
+        }
+
+        void CreateAudioBands()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (_frequencyBand[i] > _freqBandHighest[i])
+                {
+                    _freqBandHighest[i] = _frequencyBand[i];
+                }
+
+                AudioBand[i] = _frequencyBand[i] / _freqBandHighest[i];
+                AudioBandBuffer[i] = _bandBuffer[i] / _freqBandHighest[i];
+            }
         }
     }
 }

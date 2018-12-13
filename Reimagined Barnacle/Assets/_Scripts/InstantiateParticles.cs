@@ -11,8 +11,13 @@ namespace _Scripts
         private ParticleSystem.ShapeModule[] _shapeModules;
         private ParticleSystem.MainModule[] _mainModules;
         private ParticleSystem.NoiseModule[] _noiseModules;
+<<<<<<< Updated upstream
         public static GameObject[] _particleGenerators;
         private int _numberOfParticleGenerators = Audio.FrequencyBand.Length;
+=======
+        private ParticleSystem[] _particleGenerators;
+        private int _numberOfParticleGenerators = Audio.AudioBandBuffer.Length;
+>>>>>>> Stashed changes
 
         // Use this for initialization
         void Start()
@@ -68,11 +73,11 @@ namespace _Scripts
         {
             for (int i = 0; i < _numberOfParticleGenerators; i++)
             {
-                _mainModules[i].startColor = Color.HSVToRGB(Audio.FrequencyBand[i], 1, 1);
-                _mainModules[i].startSpeed = Audio.FrequencyBand[i] * 20;
-                _emissionModules[i].rateOverTime = Audio.BandBuffer[i] * 100;
-                _noiseModules[i].strength = Audio.BandBuffer[i];
-                _noiseModules[i].frequency = Audio.BandBuffer[i] * 0.5f;
+                _mainModules[i].startColor = Color.HSVToRGB(Audio.AudioBand[i], 1, 1);
+                _mainModules[i].startSpeed = Audio.AudioBand[i] * 20;
+                _emissionModules[i].rateOverTime = Audio.AudioBandBuffer[i] * 100;
+                _noiseModules[i].strength = Audio.AudioBandBuffer[i];
+                _noiseModules[i].frequency = Audio.AudioBandBuffer[i] * 0.5f;
             }
         }
 

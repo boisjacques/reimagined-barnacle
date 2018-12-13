@@ -6,7 +6,7 @@ namespace _Scripts
     [RequireComponent(typeof(LineRenderer))]
     public class LineRendererController : MonoBehaviour
     {
-        private readonly int _numberOfPoints = Audio.BandBuffer.Length;
+        private readonly int _numberOfPoints = Audio.AudioBandBuffer.Length;
 
         public float Length = 50;
 
@@ -40,7 +40,7 @@ namespace _Scripts
             for (int i = 0; i < _numberOfPoints; i++)
             {
                 float x = start + i * step;
-                _points[i] = new Vector3(x, Audio.BandBuffer[i] * WaveHeight + 0.5f, 0);
+                _points[i] = new Vector3(x, Audio.AudioBandBuffer[i] * WaveHeight + 0.5f, 0);
             }
         }
     }

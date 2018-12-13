@@ -39,13 +39,13 @@ namespace _Scripts
             {
                 for (int col = 0; col < Width; col++)
                 {
-                    if (boost(Audio.BandBuffer[col]) > row)
+                    if (boost(Audio.AudioBandBuffer[col]) > row)
                     {
                         _bricks[row, col].GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
                         _bricks[row, col].GetComponent<Renderer>().material.SetColor("_EMISSION",
                             Color.HSVToRGB(col / Width, 1, 1));
                     }
-                    else if (boost(Audio.BandBuffer[col]) <= row)
+                    else if (boost(Audio.AudioBandBuffer[col]) <= row)
                     {
                         _bricks[row, col].GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
                     }
