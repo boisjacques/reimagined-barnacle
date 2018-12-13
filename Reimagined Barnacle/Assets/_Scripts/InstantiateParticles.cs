@@ -11,13 +11,8 @@ namespace _Scripts
         private ParticleSystem.ShapeModule[] _shapeModules;
         private ParticleSystem.MainModule[] _mainModules;
         private ParticleSystem.NoiseModule[] _noiseModules;
-<<<<<<< Updated upstream
         public static GameObject[] _particleGenerators;
-        private int _numberOfParticleGenerators = Audio.FrequencyBand.Length;
-=======
-        private ParticleSystem[] _particleGenerators;
-        private int _numberOfParticleGenerators = Audio.AudioBandBuffer.Length;
->>>>>>> Stashed changes
+        private int _numberOfParticleGenerators = Audio.AudioBand.Length;
 
         // Use this for initialization
         void Start()
@@ -64,8 +59,6 @@ namespace _Scripts
             InitializeEmissionModules();
             InitializeNoiseModules();
             InitializeShapeModules();
-            GameObject windGenerator = new GameObject();
-            windGenerator.AddComponent<WindController>();
         }
 
         // Update is called once per frame
