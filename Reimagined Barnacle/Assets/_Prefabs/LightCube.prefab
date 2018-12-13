@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 23994006852634518}
   - component: {fileID: 65748528464676494}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: LightCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,7 +57,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: fbc875535cdae47bbaab7277ed5a869c, type: 2}
+  - {fileID: 2100000, guid: a87ea56eb864545188debcbdf6f70d15, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
