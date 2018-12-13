@@ -617,6 +617,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FrequencyBandDebug: []
   SamplesDebug: []
+  sampleRate: 0
 --- !u!1 &2079405953
 GameObject:
   m_ObjectHideFlags: 0
