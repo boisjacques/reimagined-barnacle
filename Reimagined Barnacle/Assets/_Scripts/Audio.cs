@@ -5,7 +5,8 @@ namespace _Scripts
     public class Audio : MonoBehaviour
     {
         private AudioSource _audioSource;
-        private float[] _samples = new float[512];
+        private float[] _samplesLeft = new float[512];
+        private float[] _samplesRight = new float[512];
         private float[] _frequencyBand = new float[8];
         private float[] _bandBuffer = new float[8];
         public static float AverageFrequency;
@@ -15,8 +16,6 @@ namespace _Scripts
         public static float[] AudioBand = new float[8];
         public static float[] AudioBandBuffer = new float[8];
         
-        public float[] FrequencyBandDebug;
-        public float[] SamplesDebug;
         public int sampleRate;
 
         // Use this for initialization
@@ -32,14 +31,13 @@ namespace _Scripts
             MakeFrequencyBand();
             BandBufferMethod();
             CreateAudioBands();
-            FrequencyBandDebug = _frequencyBand;
-            SamplesDebug = _samples;
             sampleRate = AudioSettings.outputSampleRate;
         }
 
         void GetSpectrumData()
         {
-            _audioSource.GetSpectrumData(Samples, 0, FFTWindow.BlackmanHarris);
+            _audioSource.GetSpectrumData(_samplesLeft, 0, FFTWindow.BlackmanHarris);
+            _audioSource.GetSpectrumData(_samplesRight, 1, FFTWindow.BlackmanHarris);
         }
 
         void BandBufferMethod()
@@ -75,7 +73,7 @@ namespace _Scripts
 
                 for (int j = 0; j < sampleCount; j++)
                 {
-                    average += _samples[count] * (count + 1);
+                    average += _samplesLeft[count] + _samplesRight[count] * (count + 1);
                     count++;
                 }
 
