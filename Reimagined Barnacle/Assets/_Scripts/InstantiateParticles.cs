@@ -11,7 +11,7 @@ namespace _Scripts
         private ParticleSystem.ShapeModule[] _shapeModules;
         private ParticleSystem.MainModule[] _mainModules;
         private ParticleSystem.NoiseModule[] _noiseModules;
-        private ParticleSystem[] _particleGenerators;
+        public static GameObject[] _particleGenerators;
         private int _numberOfParticleGenerators = Audio.FrequencyBand.Length;
 
         // Use this for initialization
@@ -20,7 +20,7 @@ namespace _Scripts
             _emissionModules = new ParticleSystem.EmissionModule[_numberOfParticleGenerators];
             _shapeModules = new ParticleSystem.ShapeModule[_numberOfParticleGenerators];
             _mainModules = new ParticleSystem.MainModule[_numberOfParticleGenerators];
-            _particleGenerators = new ParticleSystem[_numberOfParticleGenerators];
+            _particleGenerators = new GameObject[_numberOfParticleGenerators];
             _noiseModules = new ParticleSystem.NoiseModule[_numberOfParticleGenerators];
             float offset = -16;
             for (int i = 0; i < _numberOfParticleGenerators; i++)
@@ -28,6 +28,7 @@ namespace _Scripts
                 GameObject go = new GameObject();
                 ParticleSystem particleGenerator = go.AddComponent<ParticleSystem>();
                 ParticleSystemRenderer particleRenderer =  (ParticleSystemRenderer)particleGenerator.GetComponent<Renderer>();
+                
                 ExtractModules(i, particleGenerator);
 
                 ParticleSystem.LightsModule lm = particleGenerator.lights;
@@ -40,19 +41,26 @@ namespace _Scripts
                 trm.enabled = true;
                 trm.lifetime = 0.1f;
 
+                ParticleSystem.ExternalForcesModule em = particleGenerator.externalForces;
+                em.enabled = true;
+                em.multiplier = 0.5f;
+
                 particleRenderer.renderMode = ParticleSystemRenderMode.Mesh;
                 particleRenderer.mesh = Resources.GetBuiltinResource<Mesh>("Sphere.fbx");
                 particleRenderer.material = ParticleMaterial;
                 particleRenderer.trailMaterial = TrailMaterial;
 
                 Vector3 pos = new Vector3(offset + 4 * i, 0, 0);
-                go.transform.position = transform.TransformPoint(pos);
+                go.transform.position = transform.TransformPoint(transform.position + pos);
                 go.transform.parent = transform;
+                _particleGenerators[i] = go;
             }
             InitializeMainModules();
             InitializeEmissionModules();
             InitializeNoiseModules();
             InitializeShapeModules();
+            GameObject windGenerator = new GameObject();
+            windGenerator.AddComponent<WindController>();
         }
 
         // Update is called once per frame

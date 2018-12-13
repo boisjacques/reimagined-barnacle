@@ -5,7 +5,7 @@ namespace _Scripts
     public class Audio : MonoBehaviour
     {
         private AudioSource _audioSource;
-        public static float[] Samples = new float[512];
+        public static float[] Samples = new float[1024];
         public static float[] FrequencyBand = new float[8];
         public static float[] BandBuffer = new float[8];
         public static float AverageFrequency;
@@ -13,6 +13,7 @@ namespace _Scripts
 
         public float[] FrequencyBandDebug;
         public float[] SamplesDebug;
+        public int sampleRate;
 
         // Use this for initialization
         void Start()
@@ -28,11 +29,12 @@ namespace _Scripts
             BandBufferMethod();
             FrequencyBandDebug = FrequencyBand;
             SamplesDebug = Samples;
+            sampleRate = AudioSettings.outputSampleRate;
         }
 
         void GetSpectrumData()
         {
-            _audioSource.GetSpectrumData(Samples, 0, FFTWindow.Blackman);
+            _audioSource.GetSpectrumData(Samples, 0, FFTWindow.BlackmanHarris);
         }
 
         void BandBufferMethod()
