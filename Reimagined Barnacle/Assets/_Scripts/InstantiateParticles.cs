@@ -17,18 +17,30 @@ namespace _Scripts
         // Use this for initialization
         void Start()
         {
+            string[] bandNames =
+            {
+                "Sub Base",
+                "Bass",
+                "Low Midrange",
+                "Midrange",
+                "Upper Midrange",
+                "Low Presence",
+                "Presence",
+                "Brilliance"
+            };
             _emissionModules = new ParticleSystem.EmissionModule[_numberOfParticleGenerators];
             _shapeModules = new ParticleSystem.ShapeModule[_numberOfParticleGenerators];
             _mainModules = new ParticleSystem.MainModule[_numberOfParticleGenerators];
             _particleGenerators = new GameObject[_numberOfParticleGenerators];
             _noiseModules = new ParticleSystem.NoiseModule[_numberOfParticleGenerators];
-            float offset = -16;
+            float offset = -15;
             for (int i = 0; i < _numberOfParticleGenerators; i++)
             {
-                GameObject go = new GameObject();
+                GameObject go = new GameObject(bandNames[i]);
                 ParticleSystem particleGenerator = go.AddComponent<ParticleSystem>();
-                ParticleSystemRenderer particleRenderer =  (ParticleSystemRenderer)particleGenerator.GetComponent<Renderer>();
-                
+                ParticleSystemRenderer particleRenderer =
+                    (ParticleSystemRenderer) particleGenerator.GetComponent<Renderer>();
+
                 ExtractModules(i, particleGenerator);
 
                 ParticleSystem.LightsModule lm = particleGenerator.lights;
@@ -55,6 +67,7 @@ namespace _Scripts
                 go.transform.parent = transform;
                 _particleGenerators[i] = go;
             }
+
             InitializeMainModules();
             InitializeEmissionModules();
             InitializeNoiseModules();
@@ -79,7 +92,7 @@ namespace _Scripts
             for (int i = 0; i < _numberOfParticleGenerators; i++)
             {
                 _mainModules[i].gravityModifier = 0.5f;
-                _mainModules[i].startSize = 0.1f;            
+                _mainModules[i].startSize = 0.1f;
             }
         }
 
@@ -100,7 +113,7 @@ namespace _Scripts
                 _shapeModules[i].rotation = new Vector3(-90, 0, 0);
             }
         }
-        
+
         void InitializeNoiseModules()
         {
             for (int i = 0; i < _numberOfParticleGenerators; i++)
