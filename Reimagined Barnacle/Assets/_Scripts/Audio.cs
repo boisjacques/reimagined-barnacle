@@ -9,12 +9,14 @@ namespace _Scripts
         private float[] _samplesRight = new float[512];
         private float[] _frequencyBand = new float[8];
         private float[] _bandBuffer = new float[8];
-        public static float AverageFrequency;
         private float[] _bufferDecrease = new float[8];
         
-        private float[] _freqBandHighest = new float[8];
+        float[] _freqBandHighest = new float[8];
         public static float[] AudioBand = new float[8];
         public static float[] AudioBandBuffer = new float[8];
+
+        public static float Amplitude, AmplitudeBuffer;
+        private float _amplitudeHighest;
         
         public int sampleRate;
 
@@ -22,6 +24,7 @@ namespace _Scripts
         void Start()
         {
             _audioSource = GetComponent<AudioSource>();
+            InitialiseFreq();
         }
 
         // Update is called once per frame
@@ -31,6 +34,7 @@ namespace _Scripts
             MakeFrequencyBand();
             BandBufferMethod();
             CreateAudioBands();
+            CalculateAmplitude();
             sampleRate = AudioSettings.outputSampleRate;
         }
 
@@ -38,6 +42,14 @@ namespace _Scripts
         {
             _audioSource.GetSpectrumData(_samplesLeft, 0, FFTWindow.BlackmanHarris);
             _audioSource.GetSpectrumData(_samplesRight, 1, FFTWindow.BlackmanHarris);
+        }
+
+        void InitialiseFreq()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                _freqBandHighest[i] = 1;
+            }
         }
 
         void BandBufferMethod()
@@ -83,8 +95,23 @@ namespace _Scripts
             }
         }
 
-        void CalculateAverageFrequency()
+        void CalculateAmplitude()
         {
+            float currentAmp = 0;
+            float currentBuffer = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                currentAmp = AudioBand[i];
+                currentBuffer = AudioBandBuffer[i];
+            }
+
+            if (currentAmp > _amplitudeHighest)
+            {
+                _amplitudeHighest = currentAmp;
+            }
+
+            Amplitude = currentAmp / _amplitudeHighest;
+            AmplitudeBuffer = currentBuffer / _amplitudeHighest;
         }
 
         void CreateAudioBands()

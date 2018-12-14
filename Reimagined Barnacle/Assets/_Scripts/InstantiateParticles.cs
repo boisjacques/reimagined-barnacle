@@ -33,7 +33,7 @@ namespace _Scripts
             _mainModules = new ParticleSystem.MainModule[_numberOfParticleGenerators];
             _particleGenerators = new GameObject[_numberOfParticleGenerators];
             _noiseModules = new ParticleSystem.NoiseModule[_numberOfParticleGenerators];
-            float offset = -15;
+            float offset = -14;
             for (int i = 0; i < _numberOfParticleGenerators; i++)
             {
                 GameObject go = new GameObject(bandNames[i]);

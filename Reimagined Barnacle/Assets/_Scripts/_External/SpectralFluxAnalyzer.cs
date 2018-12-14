@@ -18,7 +18,7 @@ namespace _Scripts._External
 
 		// Sensitivity multiplier to scale the average threshold.
 		// In this case, if a rectified spectral flux sample is > 1.5 times the average, it is a peak
-		float thresholdMultiplier = 1.5f;
+		float thresholdMultiplier;
 
 		// Number of samples to average in our window
 		int thresholdWindowSize = 50;
@@ -30,7 +30,9 @@ namespace _Scripts._External
 
 		int indexToProcess;
 
-		public SpectralFluxAnalyzer () {
+		public SpectralFluxAnalyzer (float threshold)
+		{
+			thresholdMultiplier = threshold;
 			spectralFluxSamples = new List<SpectralFluxInfo> ();
 
 			// Start processing from middle of first window and increment by 1 from there
