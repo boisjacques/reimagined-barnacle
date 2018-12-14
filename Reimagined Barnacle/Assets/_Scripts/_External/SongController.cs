@@ -61,6 +61,10 @@ namespace _Scripts._External
 
         void Update()
         {
+            if (_lightBarController == null)
+            {
+                _lightBarController = GameObject.FindGameObjectWithTag("LightBar").GetComponent<LightBarController>();
+            }
             // Real-time
             if (!finishedSampling)
             {
