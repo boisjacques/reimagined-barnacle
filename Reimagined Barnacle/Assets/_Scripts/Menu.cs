@@ -7,7 +7,7 @@ namespace _Scripts
     {
         public void PlayGame()
         {
-            SceneManager.LoadScene("Main Scene");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
 
         public void QuitGame()

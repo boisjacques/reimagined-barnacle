@@ -24,6 +24,7 @@ namespace _Scripts
         // Use this for initialization
         void Start()
         {
+            int onset = 0;
             GameObject lightbar = GameObject.CreatePrimitive(PrimitiveType.Cube);
             _renderer = lightbar.GetComponent<Renderer>();
             _renderer.material.EnableKeyword("_EMISSION");
@@ -31,12 +32,18 @@ namespace _Scripts
             lightbar.transform.localScale = new Vector3(30, 1, 1);
             lightbar.transform.parent = transform;
             lightbar.transform.position = new Vector3(0, 0.5f, -1);
-            int onset = PlayerPrefs.GetInt(ONSET_DETECTION);
+            if (PlayerPrefs.HasKey(ONSET_DETECTION))
+            {
+            onset = PlayerPrefs.GetInt(ONSET_DETECTION);
+            }
             if (onset == 1)
             {
                 UseOnsetAnalyser = true;
             }
-            else
+            else if (PlayerPrefs.HasKey(SUBBASE_THRESHOLD) &&
+                     PlayerPrefs.HasKey(BASS_THRESHOLD) &&
+                     PlayerPrefs.HasKey(LOW_MID_THRESHOLD) &&
+                     PlayerPrefs.HasKey(FADE_OUT_DURATION))
             {
                 ThresholdSubBase = PlayerPrefs.GetFloat(SUBBASE_THRESHOLD);
                 ThresholdBass = PlayerPrefs.GetFloat(BASS_THRESHOLD);

@@ -28,6 +28,7 @@ namespace _Scripts
             _audioSource = GetComponent<AudioSource>();
             if (AudioClips.Length > 0)
             {
+                if (PlayerPrefs.HasKey("song"))
                 _audioSource.clip = AudioClips[PlayerPrefs.GetInt("song")];
             }
             InitialiseFreq();
