@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using _Scripts._External;
 
@@ -11,44 +12,58 @@ namespace _Scripts
         private const string BASS_THRESHOLD = "bass-threshold";
         private const string LOW_MID_THRESHOLD = "low-mid-threshold";
         private const string FADE_OUT_DURATION = "fade-out";
-        
+
         public bool UseOnsetAnalyser = true;
         public float ThresholdSubBase = 0.6f;
         public float ThresholdBass = 0.6f;
         public float ThresholdLowMid = 0.6f;
         private AudioSource _audioSource;
-        private Renderer _renderer;
+        private Renderer[] _renderer = new Renderer[30];
+        private Light[] _light = new Light[30];
         public float FadeParam = 1;
         private static float t = 0.0f;
+        private float _startColor = 40 / 360;
+        private float _targetColor = 16 / 360;
 
         // Use this for initialization
         void Start()
         {
-            int onset = 0;
-            GameObject lightbar = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            _renderer = lightbar.GetComponent<Renderer>();
-            _renderer.material.EnableKeyword("_EMISSION");
-            _renderer.material.SetColor("_EmissionColor", Color.HSVToRGB(1, 1, 0));
-            lightbar.transform.localScale = new Vector3(30, 1, 1);
-            lightbar.transform.parent = transform;
-            lightbar.transform.position = new Vector3(0, 0.5f, -1);
-            if (PlayerPrefs.HasKey(ONSET_DETECTION))
+            int offset = -15;
+            for (int i = 0; i < 30; i++)
             {
-            onset = PlayerPrefs.GetInt(ONSET_DETECTION);
-            }
-            if (onset == 1)
-            {
-                UseOnsetAnalyser = true;
-            }
-            else if (PlayerPrefs.HasKey(SUBBASE_THRESHOLD) &&
-                     PlayerPrefs.HasKey(BASS_THRESHOLD) &&
-                     PlayerPrefs.HasKey(LOW_MID_THRESHOLD) &&
-                     PlayerPrefs.HasKey(FADE_OUT_DURATION))
-            {
-                ThresholdSubBase = PlayerPrefs.GetFloat(SUBBASE_THRESHOLD);
-                ThresholdBass = PlayerPrefs.GetFloat(BASS_THRESHOLD);
-                ThresholdLowMid = PlayerPrefs.GetFloat(LOW_MID_THRESHOLD);
-                FadeParam = PlayerPrefs.GetFloat(FADE_OUT_DURATION);
+                int onset = 0;
+                GameObject lightbar = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                lightbar.AddComponent<Light>();
+                _light[i] = lightbar.GetComponent<Light>();
+                _light[i].type = LightType.Point;
+                _light[i].renderMode = LightRenderMode.ForcePixel;
+                _light[i].intensity = 0;
+                _light[i].bounceIntensity = 0;
+                _light[i].range = 3;
+                _renderer[i] = lightbar.GetComponent<Renderer>();
+                _renderer[i].material.EnableKeyword("_EMISSION");
+                _renderer[i].material.SetColor("_EmissionColor", Color.HSVToRGB(1, 1, 0));
+                lightbar.transform.parent = transform;
+                lightbar.transform.position = new Vector3(offset + i, 0.5f, -1);
+                if (PlayerPrefs.HasKey(ONSET_DETECTION))
+                {
+                    onset = PlayerPrefs.GetInt(ONSET_DETECTION);
+                }
+
+                if (onset == 1)
+                {
+                    UseOnsetAnalyser = true;
+                }
+                else if (PlayerPrefs.HasKey(SUBBASE_THRESHOLD) &&
+                         PlayerPrefs.HasKey(BASS_THRESHOLD) &&
+                         PlayerPrefs.HasKey(LOW_MID_THRESHOLD) &&
+                         PlayerPrefs.HasKey(FADE_OUT_DURATION))
+                {
+                    ThresholdSubBase = PlayerPrefs.GetFloat(SUBBASE_THRESHOLD);
+                    ThresholdBass = PlayerPrefs.GetFloat(BASS_THRESHOLD);
+                    ThresholdLowMid = PlayerPrefs.GetFloat(LOW_MID_THRESHOLD);
+                    FadeParam = PlayerPrefs.GetFloat(FADE_OUT_DURATION);
+                }   
             }
         }
 
@@ -77,18 +92,30 @@ namespace _Scripts
 
         private void FadeOut()
         {
-            float startColor = 40 / 360;
-            float targetColor = 16 / 360;
-            float hue, saturation, value;
-            hue = Mathf.Lerp(startColor, targetColor, t);
+            float hue, saturation, value, intensity, bounceIntensity;
+            hue = Mathf.Lerp(_startColor, _targetColor, t);
             saturation = Mathf.Lerp(0, 1, t);
             value = Mathf.Lerp(1, 0, t);
-            _renderer.material.SetColor("_EmissionColor", Color.HSVToRGB(hue, saturation, value));
+            intensity = Mathf.Lerp(1.25f, 0, t);
+            bounceIntensity = Mathf.Lerp(1.1f, 0, t);
+            for (int i = 0; i < 30; i++)
+            {
+                _renderer[i].material.SetColor("_EmissionColor", Color.HSVToRGB(hue, saturation, value));
+                _light[i].color = Color.HSVToRGB(hue, saturation, value);
+                _light[i].intensity = intensity;
+                _light[i].bounceIntensity = bounceIntensity;   
+            }
         }
 
         private void FireUp()
         {
-            _renderer.material.SetColor("_EmissionColor", Color.HSVToRGB(1, 0, 1));
+            for (int i = 0; i < 30; i++)
+            {
+                _renderer[i].material.SetColor("_EmissionColor", Color.HSVToRGB(_startColor, 0, 1));
+                _light[i].color = Color.HSVToRGB(_startColor, 0, 1);
+                _light[i].intensity = 1.25f;
+                _light[i].bounceIntensity = 1.1f;   
+            }
             t = 0;
         }
 
