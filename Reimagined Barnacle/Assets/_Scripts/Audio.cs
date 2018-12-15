@@ -15,6 +15,8 @@ namespace _Scripts
         public static float[] AudioBand = new float[8];
         public static float[] AudioBandBuffer = new float[8];
 
+        public AudioClip[] AudioClips;
+        
         public static float Amplitude, AmplitudeBuffer;
         private float _amplitudeHighest;
         
@@ -24,6 +26,10 @@ namespace _Scripts
         void Start()
         {
             _audioSource = GetComponent<AudioSource>();
+            if (AudioClips.Length > 0)
+            {
+                _audioSource.clip = AudioClips[PlayerPrefs.GetInt("song")];
+            }
             InitialiseFreq();
         }
 

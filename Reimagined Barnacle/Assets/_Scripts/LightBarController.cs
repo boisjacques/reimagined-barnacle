@@ -6,13 +6,19 @@ namespace _Scripts
 {
     public class LightBarController : MonoBehaviour
     {
+        private const string ONSET_DETECTION = "onset";
+        private const string SUBBASE_THRESHOLD = "sub-base-threshold";
+        private const string BASS_THRESHOLD = "bass-threshold";
+        private const string LOW_MID_THRESHOLD = "low-mid-threshold";
+        private const string FADE_OUT_DURATION = "fade-out";
+        
         public bool UseOnsetAnalyser = true;
         public float ThresholdSubBase = 0.6f;
         public float ThresholdBass = 0.6f;
         public float ThresholdLowMid = 0.6f;
         private AudioSource _audioSource;
         private Renderer _renderer;
-        public float FadeParam = 0.25f;
+        public float FadeParam = 1;
         private static float t = 0.0f;
 
         // Use this for initialization
@@ -25,6 +31,18 @@ namespace _Scripts
             lightbar.transform.localScale = new Vector3(30, 1, 1);
             lightbar.transform.parent = transform;
             lightbar.transform.position = new Vector3(0, 0.5f, -1);
+            int onset = PlayerPrefs.GetInt(ONSET_DETECTION);
+            if (onset == 1)
+            {
+                UseOnsetAnalyser = true;
+            }
+            else
+            {
+                ThresholdSubBase = PlayerPrefs.GetFloat(SUBBASE_THRESHOLD);
+                ThresholdBass = PlayerPrefs.GetFloat(BASS_THRESHOLD);
+                ThresholdLowMid = PlayerPrefs.GetFloat(LOW_MID_THRESHOLD);
+                FadeParam = PlayerPrefs.GetFloat(FADE_OUT_DURATION);
+            }
         }
 
         // Update is called once per frame
