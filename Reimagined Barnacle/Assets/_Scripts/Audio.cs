@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace _Scripts
 {
@@ -10,27 +11,23 @@ namespace _Scripts
         private float[] _frequencyBand = new float[8];
         private float[] _bandBuffer = new float[8];
         private float[] _bufferDecrease = new float[8];
-        
+
         float[] _freqBandHighest = new float[8];
         public static float[] AudioBand = new float[8];
         public static float[] AudioBandBuffer = new float[8];
 
         public AudioClip[] AudioClips;
-        
+
         public static float Amplitude, AmplitudeBuffer;
         private float _amplitudeHighest;
-        
+        private int _activeClip;
+
         public int sampleRate;
 
         // Use this for initialization
         void Start()
         {
             _audioSource = GetComponent<AudioSource>();
-            if (AudioClips.Length > 0)
-            {
-                if (PlayerPrefs.HasKey("song"))
-                _audioSource.clip = AudioClips[PlayerPrefs.GetInt("song")];
-            }
             InitialiseFreq();
         }
 
@@ -42,6 +39,7 @@ namespace _Scripts
             BandBufferMethod();
             CreateAudioBands();
             CalculateAmplitude();
+            ChangeTrack();
             sampleRate = AudioSettings.outputSampleRate;
         }
 
@@ -132,6 +130,47 @@ namespace _Scripts
 
                 AudioBand[i] = _frequencyBand[i] / _freqBandHighest[i];
                 AudioBandBuffer[i] = _bandBuffer[i] / _freqBandHighest[i];
+            }
+        }
+
+        void ChangeTrack()
+        {
+            bool changed = false;
+            if (Application.platform == RuntimePlatform.OSXPlayer &&
+                Input.GetButtonDown(KeyCode.JoystickButton16.ToString()) ||
+                Application.platform == RuntimePlatform.WindowsPlayer &&
+                Input.GetButtonDown(KeyCode.JoystickButton0.ToString()) ||
+                Input.GetKeyDown(KeyCode.M))
+            {
+                _activeClip += 1 % AudioClips.Length;
+                changed = true;
+            }
+            else if (Application.platform == RuntimePlatform.OSXPlayer &&
+                     Input.GetButtonDown(KeyCode.JoystickButton17.ToString()) ||
+                     Application.platform == RuntimePlatform.WindowsPlayer &&
+                     Input.GetButtonDown(KeyCode.JoystickButton1.ToString()) ||
+                     Input.GetKeyDown(KeyCode.N))
+            {
+                _activeClip -= 1 % AudioClips.Length;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                _audioSource.clip = AudioClips[_activeClip];
+                _audioSource.Play();
+                NormaliseFrequencyBands();
+            }
+        }
+
+        void NormaliseFrequencyBands()
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                _freqBandHighest[i] = 0;
+            }
+
+            {
             }
         }
     }

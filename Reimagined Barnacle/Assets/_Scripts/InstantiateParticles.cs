@@ -13,6 +13,7 @@ namespace _Scripts
         private ParticleSystem.NoiseModule[] _noiseModules;
         public static GameObject[] _particleGenerators;
         private int _numberOfParticleGenerators = Audio.AudioBand.Length;
+        private float _noiseMultiplier = 1;
 
         // Use this for initialization
         void Start()
@@ -82,9 +83,10 @@ namespace _Scripts
                 _mainModules[i].startColor = Color.HSVToRGB(Audio.AudioBand[i], 1, 1);
                 _mainModules[i].startSpeed = Audio.AudioBand[i] * 20;
                 _emissionModules[i].rateOverTime = Audio.AudioBandBuffer[i] * 100;
-                _noiseModules[i].strength = Audio.AudioBandBuffer[i];
+                _noiseModules[i].strength = Audio.AudioBandBuffer[i] * _noiseMultiplier;
                 _noiseModules[i].frequency = Audio.AudioBandBuffer[i] * 0.5f;
             }
+            ChangeNoise();
         }
 
         void InitializeMainModules()
@@ -128,6 +130,11 @@ namespace _Scripts
             _emissionModules[i] = particleGenerator.emission;
             _shapeModules[i] = particleGenerator.shape;
             _noiseModules[i] = particleGenerator.noise;
+        }
+        
+        void ChangeNoise()
+        {
+            _noiseMultiplier += Input.GetAxis("Horizontal");
         }
     }
 }
