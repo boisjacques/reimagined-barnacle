@@ -7,12 +7,6 @@ namespace _Scripts
 {
     public class LightBarController : MonoBehaviour
     {
-        private const string ONSET_DETECTION = "onset";
-        private const string SUBBASE_THRESHOLD = "sub-base-threshold";
-        private const string BASS_THRESHOLD = "bass-threshold";
-        private const string LOW_MID_THRESHOLD = "low-mid-threshold";
-        private const string FADE_OUT_DURATION = "fade-out";
-
         public bool UseOnsetAnalyser = true;
         public float ThresholdSubBase = 0.6f;
         public float ThresholdBass = 0.6f;
@@ -45,25 +39,6 @@ namespace _Scripts
                 _renderers[i].material.SetColor("_EmissionColor", Color.HSVToRGB(1, 1, 0));
                 lightbar.transform.parent = transform;
                 lightbar.transform.position = new Vector3(offset + i, 0.5f, -1);
-                if (PlayerPrefs.HasKey(ONSET_DETECTION))
-                {
-                    onset = PlayerPrefs.GetInt(ONSET_DETECTION);
-                }
-
-                if (onset == 1)
-                {
-                    UseOnsetAnalyser = true;
-                }
-                else if (PlayerPrefs.HasKey(SUBBASE_THRESHOLD) &&
-                         PlayerPrefs.HasKey(BASS_THRESHOLD) &&
-                         PlayerPrefs.HasKey(LOW_MID_THRESHOLD) &&
-                         PlayerPrefs.HasKey(FADE_OUT_DURATION))
-                {
-                    ThresholdSubBase = PlayerPrefs.GetFloat(SUBBASE_THRESHOLD);
-                    ThresholdBass = PlayerPrefs.GetFloat(BASS_THRESHOLD);
-                    ThresholdLowMid = PlayerPrefs.GetFloat(LOW_MID_THRESHOLD);
-                    FadeParam = PlayerPrefs.GetFloat(FADE_OUT_DURATION);
-                }
             }
         }
 
@@ -161,6 +136,9 @@ namespace _Scripts
                 if (_lights[i].range < 0)
                 {
                     _lights[i].range = 0;
+                } else if (_lights[i].range > 10)
+                {
+                    _lights[i].range = 10;
                 }
             }
         }

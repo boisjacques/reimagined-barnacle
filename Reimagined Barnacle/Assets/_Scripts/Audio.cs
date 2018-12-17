@@ -28,15 +28,6 @@ namespace _Scripts
         void Start()
         {
             _audioSource = GetComponent<AudioSource>();
-            if (AudioClips.Length > 0)
-            {
-                if (PlayerPrefs.HasKey("song"))
-                {
-                    _activeClip = PlayerPrefs.GetInt("song");
-                    _audioSource.clip = AudioClips[_activeClip];
-                }
-            }
-
             InitialiseFreq();
         }
 
@@ -49,7 +40,6 @@ namespace _Scripts
             CreateAudioBands();
             CalculateAmplitude();
             ChangeTrack();
-            Quit();
             sampleRate = AudioSettings.outputSampleRate;
         }
 
@@ -149,14 +139,17 @@ namespace _Scripts
             if (Application.platform == RuntimePlatform.OSXPlayer &&
                 Input.GetButtonDown(KeyCode.JoystickButton16.ToString()) ||
                 Application.platform == RuntimePlatform.WindowsPlayer &&
-                Input.GetButtonDown(KeyCode.JoystickButton0.ToString()))
+                Input.GetButtonDown(KeyCode.JoystickButton0.ToString()) ||
+                Input.GetKeyDown(KeyCode.M))
             {
                 _activeClip += 1 % AudioClips.Length;
                 changed = true;
-            } else if (Application.platform == RuntimePlatform.OSXPlayer &&
-                       Input.GetButtonDown(KeyCode.JoystickButton17.ToString()) ||
-                       Application.platform == RuntimePlatform.WindowsPlayer &&
-                       Input.GetButtonDown(KeyCode.JoystickButton1.ToString()))
+            }
+            else if (Application.platform == RuntimePlatform.OSXPlayer &&
+                     Input.GetButtonDown(KeyCode.JoystickButton17.ToString()) ||
+                     Application.platform == RuntimePlatform.WindowsPlayer &&
+                     Input.GetButtonDown(KeyCode.JoystickButton1.ToString()) ||
+                     Input.GetKeyDown(KeyCode.N))
             {
                 _activeClip -= 1 % AudioClips.Length;
                 changed = true;
@@ -166,14 +159,18 @@ namespace _Scripts
             {
                 _audioSource.clip = AudioClips[_activeClip];
                 _audioSource.Play();
+                NormaliseFrequencyBands();
             }
         }
 
-        void Quit()
+        void NormaliseFrequencyBands()
         {
-            if (Input.GetButton("Escape"))
+            for (int i = 0; i < 8; i++)
             {
-                SceneManager.LoadScene("Menu");
+                _freqBandHighest[i] = 0;
+            }
+
+            {
             }
         }
     }
