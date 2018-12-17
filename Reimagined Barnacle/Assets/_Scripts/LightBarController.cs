@@ -40,6 +40,11 @@ namespace _Scripts
                 lightbar.transform.parent = transform;
                 lightbar.transform.position = new Vector3(offset + i, 0.5f, -1);
             }
+
+            if (UseOnsetAnalyser)
+            {
+                GetComponent<SongController>().enabled = true;
+            }
         }
 
         // Update is called once per frame

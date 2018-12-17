@@ -135,6 +135,14 @@ namespace _Scripts
         void ChangeNoise()
         {
             _noiseMultiplier += Input.GetAxis("Horizontal");
+            if (_noiseMultiplier < 0)
+            {
+                _noiseMultiplier = 0;
+            }
+            else if (_noiseMultiplier > 10)
+            {
+                _noiseMultiplier = 10;
+            }
         }
     }
 }

@@ -18,11 +18,9 @@ namespace _Scripts
 
         public AudioClip[] AudioClips;
 
-        public static float Amplitude, AmplitudeBuffer;
         private float _amplitudeHighest;
         private int _activeClip;
 
-        public int sampleRate;
 
         // Use this for initialization
         void Start()
@@ -38,9 +36,7 @@ namespace _Scripts
             MakeFrequencyBand();
             BandBufferMethod();
             CreateAudioBands();
-            CalculateAmplitude();
             ChangeTrack();
-            sampleRate = AudioSettings.outputSampleRate;
         }
 
         void GetSpectrumData()
@@ -100,25 +96,6 @@ namespace _Scripts
             }
         }
 
-        void CalculateAmplitude()
-        {
-            float currentAmp = 0;
-            float currentBuffer = 0;
-            for (int i = 0; i < 8; i++)
-            {
-                currentAmp = AudioBand[i];
-                currentBuffer = AudioBandBuffer[i];
-            }
-
-            if (currentAmp > _amplitudeHighest)
-            {
-                _amplitudeHighest = currentAmp;
-            }
-
-            Amplitude = currentAmp / _amplitudeHighest;
-            AmplitudeBuffer = currentBuffer / _amplitudeHighest;
-        }
-
         void CreateAudioBands()
         {
             for (int i = 0; i < 8; i++)
@@ -167,7 +144,7 @@ namespace _Scripts
         {
             for (int i = 0; i < 8; i++)
             {
-                _freqBandHighest[i] = 0;
+                _freqBandHighest[i] = 0.001f;
             }
 
             {
